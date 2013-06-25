@@ -3,6 +3,5 @@ use Net::Docker;
 use Data::Dumper;
 
 my $docker = Net::Docker->new;
-my $d = $docker->images_viz();
-print Dumper($d);
-
+#my $d = $docker->remove_container($ARGV[0]);
+#print $d;

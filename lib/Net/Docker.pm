@@ -91,7 +91,7 @@ sub diff {
 sub remove_image {
     my ($self, @names) = @_;
     for my $image (@names) {
-        $self->ua->delete($self->_url('/images/'.$image));
+        $self->ua->request(HTTP::Request->new('DELETE', $self->_uri('/images/'.$image)));
     }
     return;
 }
@@ -99,9 +99,33 @@ sub remove_image {
 sub remove_container {
     my ($self, @names) = @_;
     for my $container (@names) {
-        $self->ua->delete(($self->_url('/containers/'.$container));
+        $self->ua->request(HTTP::Request->new('DELETE', $self->_uri('/containers/'.$container)));
     }
     return;
+}
+
+sub start {
+    my ($self, $name, %options) = @_;
+    $self->ua->post($self->_uri('/containers/'.$name.'/start'));
+    return;
+}
+
+sub stop {
+    my ($self, $name, %options) = @_;
+    $self->ua->post($self->_uri('/containers/'.$name.'/stop'));
+    return;
+}
+
+sub logs {
+    my ($self, $container) = @_;
+    my %params = (
+        logs => 1,
+        stdout => 1,
+        stderr => 1,
+    );
+    my $url = $self->_uri('/containers/'.$container.'/attach');
+    my $res = $self->ua->post($url, \%params);
+    return $res->content;
 }
 
 1;
