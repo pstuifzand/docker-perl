@@ -43,6 +43,26 @@ sub images {
     return $self->_parse('/images/json', %options);
 }
 
+sub images_viz {
+    my ($self, %options) = @_;
+    return $self->_parse('/images/viz', %options);
+}
+
+sub images_search {
+    my ($self, %options) = @_;
+    return $self->_parse('/images/search', %options);
+}
+
+sub image_history {
+    my ($self, $name, %options) = @_;
+    return $self->_parse('/images/'.$name.'/history', %options);
+}
+
+sub image {
+    my ($self, $name, %options) = @_;
+    return $self->_parse('/images/'.$name.'/json', %options);
+}
+
 sub version {
     my ($self, %options) = @_;
     return $self->_parse('/version', %options);
@@ -53,6 +73,11 @@ sub info {
     return $self->_parse('/info', %options);
 }
 
+sub container {
+    my ($self, $name, %options) = @_;
+    return $self->_parse('/containers/'.$name.'/json', %options);
+}
+
 sub container_export {
     my ($self, $name, %options) = @_;
     return $self->_parse('/containers/'.$name.'/export', %options);
@@ -61,11 +86,6 @@ sub container_export {
 sub container_changes {
     my ($self, $name, %options) = @_;
     return $self->_parse('/containers/'.$name.'/changes', %options);
-}
-
-sub container_json {
-    my ($self, $name, %options) = @_;
-    return $self->_parse('/containers/'.$name.'/json', %options);
 }
 
 1;
