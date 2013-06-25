@@ -1,4 +1,7 @@
-use lib 'lib';
+# To install/use run:
+#   carton install
+#   carton exec perl -Ilib test.pl
+
 use Net::Docker;
 use Data::Dumper;
 
