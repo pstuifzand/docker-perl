@@ -48,19 +48,19 @@ sub images_viz {
     return $self->_parse('/images/viz', %options);
 }
 
-sub images_search {
+sub search {
     my ($self, %options) = @_;
     return $self->_parse('/images/search', %options);
 }
 
-sub image_history {
-    my ($self, $name, %options) = @_;
-    return $self->_parse('/images/'.$name.'/history', %options);
+sub history {
+    my ($self, $image, %options) = @_;
+    return $self->_parse('/images/'.$image.'/history', %options);
 }
 
-sub image {
-    my ($self, $name, %options) = @_;
-    return $self->_parse('/images/'.$name.'/json', %options);
+sub inspect {
+    my ($self, $image, %options) = @_;
+    return $self->_parse('/images/'.$image.'/json', %options);
 }
 
 sub version {
@@ -73,19 +73,35 @@ sub info {
     return $self->_parse('/info', %options);
 }
 
-sub container {
+sub inspect_container {
     my ($self, $name, %options) = @_;
     return $self->_parse('/containers/'.$name.'/json', %options);
 }
 
-sub container_export {
+sub export {
     my ($self, $name, %options) = @_;
     return $self->_parse('/containers/'.$name.'/export', %options);
 }
 
-sub container_changes {
+sub diff {
     my ($self, $name, %options) = @_;
     return $self->_parse('/containers/'.$name.'/changes', %options);
+}
+
+sub remove_image {
+    my ($self, @names) = @_;
+    for my $image (@names) {
+        $self->ua->delete($self->_url('/images/'.$image));
+    }
+    return;
+}
+
+sub remove_container {
+    my ($self, @names) = @_;
+    for my $container (@names) {
+        $self->ua->delete(($self->_url('/containers/'.$container));
+    }
+    return;
 }
 
 1;
