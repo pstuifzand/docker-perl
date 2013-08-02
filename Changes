@@ -1,6 +1,8 @@
 Changes for Net-Docker
 
 {{$NEXT}}
+
+0.001001  2013-08-02 22:21:34 CEST
 	[Improvement]
 		- add `pull` method
 
