@@ -1,0 +1,6 @@
+/Net-Docker-*
+/.build
+/_build*
+/Build
+MYMETA.*
+!META.json
