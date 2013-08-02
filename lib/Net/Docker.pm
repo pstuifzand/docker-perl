@@ -35,6 +35,19 @@ sub _parse {
     croak $message;
 }
 
+sub _parse_request {
+    my ($self, $res) = @_;
+    if ($res->content_type eq 'application/json') {
+        #my @lines = split/\n/, $res->decoded_content;
+        #return map { decode_json($_) } @lines;
+        my $json = JSON::XS->new;
+        return $json->incr_parse($res->decoded_content);
+    }
+    my $message = $res->decoded_content;
+    $message =~ s/\r?\n$//;
+    croak $message;
+}
+
 sub ps {
     my ($self, %options) = @_;
     return $self->_parse('/containers/ps', %options);
@@ -104,6 +117,22 @@ sub remove_container {
         $self->ua->request(HTTP::Request->new('DELETE', $self->_uri('/containers/'.$container)));
     }
     return;
+}
+
+sub pull {
+    my ($self, $repository, $tag, $registry) = @_;
+
+    if ($repository =~ m/:/) {
+        ($repository, $tag) = split/:/, $repository;
+    }
+    my %options = (
+        fromImage => $repository,
+        tag       => $tag,
+        registry  => $registry,
+    );
+    my $uri = '/images/create';
+    my $res = $self->ua->post($self->_uri($uri, %options));
+    return $self->_parse_request($res);
 }
 
 sub start {
