@@ -1,5 +1,6 @@
 package Net::Docker;
 use strict;
+use 5.010;
 our $VERSION = '0.002001';
 
 use Moo;
@@ -57,7 +58,7 @@ sub create {
     $options{AttachStdout} //= \1;
     $options{AttachStdin}  //= \0;
     $options{OpenStdin}  //= \0;
-    $options{Tty} = \1;
+    $options{Tty} //= \1;
     my $input = encode_json(\%options);
 
     my $res = $self->ua->post($self->uri('/containers/create'), 'Content-Type' => 'application/json', Content => $input);
@@ -179,29 +180,53 @@ sub logs {
 }
 
 sub streaming_logs {
-    my $cb = pop @_; # last argument is the callback
-
     my ($self, $container, %options) = @_;
 
-    if (ref($cb) ne 'CODE') {
-        croak "Callback is not a code ref";
-    }
+    *STDOUT->autoflush(1);
+
+    my $input  = delete $options{in_fh};
+    my $output = delete $options{out_fh};
 
     my $uri = $self->uri('/containers/'.$container.'/attach', %options);
 
     my $cv = AnyEvent->condvar;
 
+    my $in_hndl;
+    my $out_hndl;
+
     my $callback; $callback = sub {
-        my ($data, $headers) = @_;
-        $cv->send;
+        my ($fh, $headers) = @_;
+
+        $fh->on_error(sub {$cv->send});
+        $fh->on_eof(sub {$cv->send});
+
+        $out_hndl = AnyEvent::Handle->new(fh => $output);
+
+        $fh->on_read(sub {
+            my ($handle) = @_;
+            $handle->unshift_read(sub {
+                my ($h) = @_;
+                my $length = length $h->{rbuf};
+                $out_hndl->push_write($h->{rbuf});
+                substr $h->{rbuf}, 0, $length, '';
+            });
+        });
+
+        $in_hndl = AnyEvent::Handle->new(fh => $input);
+        $in_hndl->on_read(sub {
+            my ($h) = @_;
+            $h->push_read(line => sub {
+                my ($h2, $line, $eol) = @_;
+                $fh->push_write($line . $eol);
+            });
+        });
+        $in_hndl->on_eof(sub {
+            $cv->send;
+        });
     };
 
     my %get_opt = (
-        on_body => sub {
-            my ($partial, $headers) = @_;
-            $cb->($partial);
-            return 1;
-        },
+        want_body_handle => 1,
     );
 
     http_request(POST => $uri->as_string, %get_opt, $callback);
