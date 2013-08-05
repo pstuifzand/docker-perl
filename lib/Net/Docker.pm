@@ -1,6 +1,6 @@
 package Net::Docker;
 use strict;
-our $VERSION = '0.002000';
+our $VERSION = '0.002001';
 
 use Moo;
 use JSON;
