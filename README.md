@@ -13,10 +13,11 @@ Net::Docker - Interface to the Docker API
     say $id;
     $api->start($id);
 
-    my $cv = $api->streaming_logs($id, (stream => 1, stdin => 1, stderr => 1, stdout => 1, logs => 1), sub {
-        my ($log) = @_;
-        print $log;
-    });
+    my $cv = $api->streaming_logs($id,
+        stream => 1, logs   => 1,
+        stdin  => 1, stderr => 1, stdout => 1,
+        in_fh  => \*STDIN, out_fh => \*STDOUT,
+    );
     $cv->recv;
 
 # DESCRIPTION
