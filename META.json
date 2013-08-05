@@ -36,6 +36,8 @@
       },
       "runtime" : {
          "requires" : {
+            "AnyEvent" : "0",
+            "AnyEvent::HTTP" : "0",
             "JSON" : "0",
             "LWP::UserAgent" : "0",
             "Moo" : "1.002000",
@@ -55,6 +57,6 @@
          "web" : "https://github.com/pstuifzand/docker-perl"
       }
    },
-   "version" : "0.001001"
+   "version" : "0.002000"
 }
 
