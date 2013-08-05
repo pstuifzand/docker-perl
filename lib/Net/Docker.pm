@@ -215,6 +215,27 @@ sub streaming_logs {
 
 Net::Docker - Interface to the Docker API
 
+=head1 SYNOPSIS
+
+    use Net::Docker;
+
+    my $api = Net::Docker->new;
+
+    my $id = $api->create(Image => 'ubuntu', Cmd => ['/bin/bash'], AttachStdin => \1, OpenStdin => \1);
+
+    say $id;
+    $api->start($id);
+
+    my $cv = $api->streaming_logs($id, (stream => 1, stdin => 1, stderr => 1, stdout => 1, logs => 1), sub {
+        my ($log) = @_;
+        print $log;
+    });
+    $cv->recv;
+
+=head1 DESCRIPTION
+
+Perl module for using the Docker Remote API.
+
 =head1 AUTHOR
 
 Peter Stuifzand E<lt>peter@stuifzand.euE<gt>
@@ -229,5 +250,7 @@ This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
 
 =head1 SEE ALSO
+
+L<http://docker.io>
 
 =cut
