@@ -1,6 +1,8 @@
 Changes for Net-Docker
 
 {{$NEXT}}
+	[Improvement]
+		- First try to write a docker-like command-line client
 
 0.002001  2013-08-05 18:19:47 CEST
 	[Improvement]
