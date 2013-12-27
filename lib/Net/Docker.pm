@@ -11,12 +11,16 @@ use LWP::UserAgent;
 use Carp;
 use AnyEvent;
 use AnyEvent::HTTP;
-use Data::Dumper;
 
-has address => (is => 'ro', default => 'http://127.0.0.1:4243');
+has address => (is => 'ro', default => 'http:var/run/docker.sock/');
 has ua      => (is => 'lazy');
 
 sub _build_ua {
+    my $self = shift;
+    if ( $self->address !~ m!http://! ) {
+        require LWP::Protocol::http::SocketUnixAlt;
+        LWP::Protocol::implementor( http => 'LWP::Protocol::http::SocketUnixAlt' );
+    }
     my $ua = LWP::UserAgent->new;
     return $ua;
 }

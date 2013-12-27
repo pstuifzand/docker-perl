@@ -3,6 +3,7 @@ use Test::More;
 use Net::Docker;
 use Data::Dumper;
 
+#my $api = Net::Docker->new( address => 'http://127.0.0.1:4243' );
 my $api = Net::Docker->new;
 ok($api);
 
