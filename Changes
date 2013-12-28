@@ -1,6 +1,8 @@
 Changes for Net-Docker
 
 {{$NEXT}}
+
+0.002004  2013-12-28 13:04:23 CET
 	[Improvement]
 		- Add support for Unix socket
 
