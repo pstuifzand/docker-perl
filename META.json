@@ -4,7 +4,7 @@
       "Peter Stuifzand <peter@stuifzand.eu>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Milla version v0.9.7, Dist::Zilla version 4.300032, CPAN::Meta::Converter version 2.120921",
+   "generated_by" : "Dist::Milla version v1.0.3, Dist::Zilla version 4.300035, CPAN::Meta::Converter version 2.120921",
    "license" : [
       "perl_5"
    ],
@@ -26,7 +26,7 @@
    "prereqs" : {
       "configure" : {
          "requires" : {
-            "Module::Build::Tiny" : "0.025"
+            "Module::Build::Tiny" : "0.030"
          }
       },
       "develop" : {
@@ -39,8 +39,8 @@
             "AnyEvent" : "0",
             "AnyEvent::HTTP" : "0",
             "JSON" : "0",
-            "LWP::UserAgent" : "0",
             "LWP::Protocol::http::SocketUnixAlt" : "0",
+            "LWP::UserAgent" : "0",
             "Moo" : "1.002000",
             "URI" : "0"
          }
@@ -58,6 +58,9 @@
          "web" : "https://github.com/pstuifzand/docker-perl"
       }
    },
-   "version" : "0.002003"
+   "version" : "0.002003",
+   "x_contributors" : [
+      "chenryn <rao.chenlin@gmail.com>"
+   ]
 }
 

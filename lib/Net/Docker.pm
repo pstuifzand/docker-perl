@@ -40,9 +40,10 @@ sub _parse {
     if ($res->content_type eq 'application/json') {
         return decode_json($res->decoded_content);
     }
-    my $message = $res->decoded_content;
-    $message =~ s/\r?\n$//;
-    croak $message;
+    elsif ($res->content_type eq 'text/plain') {
+        return eval { decode_json($res->decoded_content) };
+    }
+    $res->dump;
 }
 
 sub _parse_request {
