@@ -8,6 +8,7 @@ use JSON;
 use URI;
 use URI::QueryParam;
 use LWP::UserAgent;
+use IO::Socket::UNIX;
 use Carp;
 use AnyEvent;
 use AnyEvent::HTTP;
@@ -230,14 +231,48 @@ sub streaming_logs {
         });
     };
 
+    # There are no AnyEvent::HTTP::SocketUnix yet!
+    # Temporary change 'http:var/run/docker.sock' as 'http://var&run&docker.sock'
+    # for seem to be a domain. I think no one will name his linux file using &, yes?
+    my $unix_sock_connect; $unix_sock_connect = sub {
+        my ($host, $port, $connect_cb, $prepare_cb) = @_;
+        $host =~ s!&!/!g;
+    
+        my $sock = IO::Socket::UNIX->new(
+            Peer    => "/$host",
+            Type    => SOCK_STREAM,
+            Timeout => 2,
+            Host    => 'localhost',
+        ) or die $@;
+    
+        my $hdl = AnyEvent::Handle->new(
+            fh       => $sock,
+            on_error => sub { $connect_cb->() },
+        ) or die $@;
+    
+        $connect_cb->($sock);
+    
+        $hdl;
+    };
+
     my %get_opt = (
         want_body_handle => 1,
     );
 
-    http_request(POST => $uri->as_string, %get_opt, $callback);
+    if ( $self->address =~ m!http://! ) {
+        http_request(POST => $uri->as_string, %get_opt, $callback);
+    } else {
+        if ($uri->path =~ m!^(.+)/(/.+)$!) {
+            my ($fake_host, $upath) = ($1, $2);
+            $fake_host =~ s!/!&!g;
+            my $url = "http://${fake_host}$upath";
+            http_request(POST => $url, %get_opt, tcp_connect => $unix_sock_connect, $callback);
+        }
+    }
 
     return $cv;
 }
+
 
 1;
 
