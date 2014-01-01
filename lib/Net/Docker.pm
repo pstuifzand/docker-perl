@@ -10,6 +10,7 @@ use URI::QueryParam;
 use LWP::UserAgent;
 use Carp;
 use AnyEvent;
+use AnyEvent::Socket 'tcp_connect';
 use AnyEvent::HTTP;
 
 has address => (is => 'ro', default => 'http:var/run/docker.sock/');
@@ -230,11 +231,18 @@ sub streaming_logs {
         });
     };
 
-    my %get_opt = (
+    my %post_opt = (
         want_body_handle => 1,
+        tcp_connect => sub {
+            my ($host, $port, $connect_cb, $prepare_cb) = @_;
+            return tcp_connect('unix/', '/var/run/docker.sock', $connect_cb, $prepare_cb);
+        },
     );
 
-    http_request(POST => $uri->as_string, %get_opt, $callback);
+    my $uri = URI->new('http://localhost/v1.7/containers/'.$container.'/attach');
+    $uri->query_form(%options);
+
+    http_request(POST => $uri->as_string, %post_opt, $callback);
 
     return $cv;
 }
