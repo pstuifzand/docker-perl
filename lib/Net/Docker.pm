@@ -193,8 +193,6 @@ sub streaming_logs {
     my $input  = delete $options{in_fh};
     my $output = delete $options{out_fh};
 
-    my $uri = $self->uri('/containers/'.$container.'/attach', %options);
-
     my $cv = AnyEvent->condvar;
 
     my $in_hndl;
