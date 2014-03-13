@@ -6,8 +6,12 @@ my $api = Net::Docker->new;
 
 my $id = $api->create(Cmd => ['echo', 'Hello world'], Image => 'ubuntu');
 like($id, qr/^[0-9a-f]+$/);
-
 $api->start($id);
+
+## test named containers
+my $named_id = $api->create(Cmd => ['echo', 'Hello world'], Image => 'ubuntu', Name => 'perl-test-' . int(rand(1000)+100));
+my $ins = $api->inspect_container($named_id);
+like($ins->{Name}, qr/^\/perl-test-\d+$/);
 
 TODO: {
     local $TODO = 'needs anyevent http support for unix socket';
