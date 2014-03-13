@@ -13,7 +13,7 @@ use AnyEvent;
 use AnyEvent::Socket 'tcp_connect';
 use AnyEvent::HTTP;
 
-has address => (is => 'ro', default => 'http:var/run/docker.sock/');
+has address => (is => 'ro', default => sub { $ENV{DOCKER_HOST} || 'http:var/run/docker.sock/' });
 has ua      => (is => 'lazy');
 
 sub _build_ua {
@@ -65,9 +65,17 @@ sub create {
     $options{AttachStdin}  //= \0;
     $options{OpenStdin}  //= \0;
     $options{Tty} //= \1;
+
+    ## workaround for an odd API implementation of
+    ## container naming
+    my %query;
+    if (my $name = delete $options{Name}) {
+        $query{name} = $name;
+    }
+
     my $input = encode_json(\%options);
 
-    my $res = $self->ua->post($self->uri('/containers/create'), 'Content-Type' => 'application/json', Content => $input);
+    my $res = $self->ua->post($self->uri('/containers/create', %query), 'Content-Type' => 'application/json', Content => $input);
 
     my $json = JSON::XS->new;
     my $out = $json->incr_parse($res->decoded_content);
@@ -257,7 +265,13 @@ Net::Docker - Interface to the Docker API
 
     my $api = Net::Docker->new;
 
-    my $id = $api->create(Image => 'ubuntu', Cmd => ['/bin/bash'], AttachStdin => \1, OpenStdin => \1);
+    my $id = $api->create(
+        Image       => 'ubuntu',
+        Cmd         => ['/bin/bash'],
+        AttachStdin => \1,
+        OpenStdin   => \1,
+        Name        => 'my-container',
+    );
 
     say $id;
     $api->start($id);
