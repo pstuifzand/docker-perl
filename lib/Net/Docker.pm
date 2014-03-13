@@ -13,7 +13,7 @@ use AnyEvent;
 use AnyEvent::Socket 'tcp_connect';
 use AnyEvent::HTTP;
 
-has address => (is => 'ro', default => 'http:var/run/docker.sock/');
+has address => (is => 'ro', default => sub { $ENV{DOCKER_HOST} || 'http:var/run/docker.sock/' });
 has ua      => (is => 'lazy');
 
 sub _build_ua {
