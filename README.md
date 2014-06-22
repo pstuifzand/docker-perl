@@ -8,7 +8,13 @@ Net::Docker - Interface to the Docker API
 
     my $api = Net::Docker->new;
 
-    my $id = $api->create(Image => 'ubuntu', Cmd => ['/bin/bash'], AttachStdin => \1, OpenStdin => \1);
+    my $id = $api->create(
+        Image       => 'ubuntu',
+        Cmd         => ['/bin/bash'],
+        AttachStdin => \1,
+        OpenStdin   => \1,
+        Name        => 'my-container',
+    );
 
     say $id;
     $api->start($id);
