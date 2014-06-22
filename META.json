@@ -58,7 +58,7 @@
          "web" : "https://github.com/pstuifzand/docker-perl"
       }
    },
-   "version" : "0.002004",
+   "version" : "0.002005",
    "x_contributors" : [
       "Peter Stuifzand <peter.stuifzand@gmail.com>",
       "chenryn <rao.chenlin@gmail.com>",

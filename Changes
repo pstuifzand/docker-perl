@@ -1,6 +1,8 @@
 Changes for Net-Docker
 
 {{$NEXT}}
+
+0.002005  2014-06-22 15:05:42 CEST
 	[Improvement]
 		- Allow setting docker host via env var DOCKER_HOST
 		- Add name method to create method.
