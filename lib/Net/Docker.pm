@@ -293,7 +293,7 @@ Peter Stuifzand E<lt>peter@stuifzand.euE<gt>
 
 =head1 COPYRIGHT
 
-Copyright 2013 - Peter Stuifzand
+Copyright 2013-2014 - Peter Stuifzand
 
 =head1 LICENSE
 
@@ -302,6 +302,6 @@ it under the same terms as Perl itself.
 
 =head1 SEE ALSO
 
-L<http://docker.io>
+L<http://docker.com>
 
 =cut
