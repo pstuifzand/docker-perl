@@ -36,7 +36,7 @@ Peter Stuifzand <peter@stuifzand.eu>
 
 # COPYRIGHT
 
-Copyright 2013 - Peter Stuifzand
+Copyright 2013-2014 - Peter Stuifzand
 
 # LICENSE
 
@@ -45,4 +45,4 @@ it under the same terms as Perl itself.
 
 # SEE ALSO
 
-[http://docker.io](http://docker.io)
+[http://docker.com](http://docker.com)
